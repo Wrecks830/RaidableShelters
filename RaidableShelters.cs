@@ -6,6 +6,7 @@
 
 /*v1.0.1 - Added random skin lists for entities, added raidme skin to door, added custom item names if needed.
  *cont - Added TruePve Support
+ * v1.0.2 - Added a Player Notification Message on Shelter Spawn.
  */
 
 using Facepunch;
@@ -22,7 +23,7 @@ using Random = UnityEngine.Random;
 
 namespace Oxide.Plugins
 {
-    [Info("Raidable Shelters", "VisEntities", "1.0.0")]
+    [Info("Raidable Shelters", "VisEntities", "1.0.2")]
     [Description("Spawns shelters filled with loot for players to raid.")]
     public class RaidableShelters : RustPlugin
     {
@@ -440,6 +441,7 @@ namespace Oxide.Plugins
 
             shelter.OnPlaced(player);
             shelter.Spawn();
+            NotifyPlayer(player);
             shelter.EnableSaving(false);// Added incase of server crash
             if (TruePVE)
             {
@@ -459,6 +461,11 @@ namespace Oxide.Plugins
             SpawnShelterInteriorEntities(shelter);
 
             return shelter;
+        }
+        
+        private void NotifyPlayer(BasePlayer player)
+        {
+           player.ChatMessage("[<color=orange>Raidable Shelters</color>] An Abandoned Shelter has been detected near you!");
         }
 
         #endregion Shelters Spawning and Setup
