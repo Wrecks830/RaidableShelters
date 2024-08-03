@@ -1,7 +1,11 @@
-﻿/*
+/*
  * Copyright (C) 2024 Game4Freak.io
  * This mod is provided under the Game4Freak EULA.
  * Full legal terms can be found at https://game4freak.io/eula/
+ */
+
+/*v1.0.1 - Added random skin lists for entities, added raidme skin to door, added custom item names if needed.
+ *cont - Added TruePve Support
  */
 
 using Facepunch;
@@ -12,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Oxide.Core.Plugins;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -21,6 +26,9 @@ namespace Oxide.Plugins
     [Description("Spawns shelters filled with loot for players to raid.")]
     public class RaidableShelters : RustPlugin
     {
+        
+        [PluginReference] private Plugin TruePVE;
+        
         #region Fields
 
         private static RaidableShelters _plugin;
@@ -90,7 +98,7 @@ namespace Oxide.Plugins
             public string PrefabName { get; set; }
 
             [JsonProperty("Skin Id")]
-            public ulong SkinId { get; set; }
+            public ulong[] SkinId { get; set; }
 
             [JsonProperty("Minimum Number To Spawn")]
             public int MinimumNumberToSpawn { get; set; }
@@ -106,6 +114,9 @@ namespace Oxide.Plugins
         {
             [JsonProperty("Shortname")]
             public string Shortname { get; set; }
+            
+            [JsonProperty("Custom Name")]
+            public string CustomName { get; set; } //Adding Custom Name
 
             [JsonProperty("Skin Id")]
             public ulong SkinId { get; set; }
@@ -172,7 +183,7 @@ namespace Oxide.Plugins
                     new InteriorEntityConfig
                     {
                         PrefabName = "assets/prefabs/deployable/woodenbox/woodbox_deployed.prefab",
-                        SkinId = 0,
+                        SkinId = new ulong[] {3235609440, 3215453447, 3189116172},
                         MinimumNumberToSpawn = 1,
                         MaximumNumberToSpawn = 3,
                         PercentageToFillContainerWithItemsIfPresent = 20,
@@ -180,7 +191,7 @@ namespace Oxide.Plugins
                     new InteriorEntityConfig
                     {
                         PrefabName = "assets/prefabs/deployable/furnace/furnace.prefab",
-                        SkinId = 0,
+                        SkinId = new ulong[] {1575177513, 1458047080, 1630511618},
                         MinimumNumberToSpawn = 1,
                         MaximumNumberToSpawn = 1,
                         PercentageToFillContainerWithItemsIfPresent = 0,
@@ -191,6 +202,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "fat.animal",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 10,
                         MaximumAmount = 25,
@@ -198,6 +210,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "cloth",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 20,
                         MaximumAmount = 30,
@@ -205,6 +218,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "wood",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 200,
                         MaximumAmount = 400,
@@ -212,6 +226,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "syringe.medical",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 2,
@@ -219,6 +234,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "rope",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 3,
@@ -226,6 +242,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "cctv.camera",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -233,6 +250,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "roadsigns",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 2,
@@ -240,6 +258,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "stones",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 150,
                         MaximumAmount = 350,
@@ -247,6 +266,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "metal.fragments",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 30,
                         MaximumAmount = 90,
@@ -254,6 +274,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "ammo.grenadelauncher.he",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 2,
@@ -261,6 +282,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "coffeecan.helmet",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -268,6 +290,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "scrap",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 10,
                         MaximumAmount = 25,
@@ -275,6 +298,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "icepick.salvaged",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -282,6 +306,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "ptz.cctv.camera",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -289,6 +314,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "corn",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 3,
                         MaximumAmount = 5,
@@ -296,6 +322,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "ammo.rocket.mlrs",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -303,6 +330,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "wall.frame.garagedoor",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -310,6 +338,7 @@ namespace Oxide.Plugins
                     new ItemInfo
                     {
                         Shortname = "pistol.revolver",
+                        CustomName = "",
                         SkinId = 0,
                         MinimumAmount = 1,
                         MaximumAmount = 1,
@@ -411,7 +440,11 @@ namespace Oxide.Plugins
 
             shelter.OnPlaced(player);
             shelter.Spawn();
-
+            shelter.EnableSaving(false);// Added incase of server crash
+            if (TruePVE)
+            {
+                timer.Once(1f, () => shelter.OwnerID = 0); // Added for TruePVE Damage
+            }
             // Set the lock owner id to 0 to prevent the player from opening the shelter door.
             LegacyShelterDoor shelterDoor = shelter.GetChildDoor();
             if (shelterDoor != null)
@@ -420,9 +453,8 @@ namespace Oxide.Plugins
                 if (baseLock != null)
                     baseLock.OwnerID = 0;
             }
-
+            shelterDoor.skinID = 2058693041; //Setting as Raid Me Skin can make random cfg later if wanted.
             StartRemovalTimer(shelter, _config.ShelterLifetimeSeconds);
-
             _spawnedShelters[shelter] = new List<BaseEntity>();
             SpawnShelterInteriorEntities(shelter);
 
@@ -515,8 +547,9 @@ namespace Oxide.Plugins
             if (entity == null)
                 return null;
 
-            entity.skinID = interiorEntityConfig.SkinId;
+            entity.skinID = GetRandomSkinId(interiorEntityConfig.SkinId); // Adding a method for random skin lists per entity
             entity.Spawn();
+            entity.EnableSaving(false); // Added incase of server crash
             RemoveProblematicComponents(entity);
 
             if (entity is StorageContainer storageContainer)
@@ -525,6 +558,12 @@ namespace Oxide.Plugins
             _spawnedShelters[shelter].Add(entity);
 
             return entity;
+        }
+
+        private ulong GetRandomSkinId(ulong[] skinIds)
+        { 
+            var rnd = Random.Range(0, skinIds.Length); 
+            return skinIds[rnd]; 
         }
 
         #endregion Interior Entities Spawning
@@ -547,6 +586,10 @@ namespace Oxide.Plugins
                 {
                     int amountToAdd = Random.Range(itemInfo.MinimumAmount, itemInfo.MaximumAmount + 1);
                     Item item = ItemManager.Create(itemDefinition, amountToAdd, itemInfo.SkinId);
+                    if (!string.IsNullOrWhiteSpace(itemInfo.CustomName))
+                    {
+                        item.name = itemInfo.CustomName; // Adding check for stack support if empty name
+                    }
                     if (!item.MoveToContainer(itemContainer))
                     {
                         item.Remove();
@@ -879,5 +922,22 @@ namespace Oxide.Plugins
         }
 
         #endregion Helper Classes
+
+        #region TruePvE 
+        
+        //TruePVE Hook
+        object CanEntityTakeDamage(BaseCombatEntity entity)
+        {
+            foreach (var (shelter, entities) in _spawnedShelters)
+            {
+                if (entity == shelter || entities.Contains(entity))
+                { 
+                    return true;
+                }
+            }
+            return null;
+        }
+        
+        #endregion
     }
 }
